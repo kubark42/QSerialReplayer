@@ -136,7 +136,7 @@ void SerialPlayback::on_timerTimeout()
 		}
 	}
 
-	// If the packet needs to be emitted
+	// Check if the packet needs to be emitted
 	if (logTime > timeStamp && fsmStatus == FSM_VALID_MSG) {
 		emit newDataReady(data);
 
