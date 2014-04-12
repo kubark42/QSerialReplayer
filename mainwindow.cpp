@@ -93,7 +93,7 @@ void MainWindow::actionConfigureSerialDeviceClicked()
 
 void MainWindow::on_newFileClicked()
 {
-	fileName = QFileDialog::QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Binary (*.ser)"));
+	fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Binary (*.ser)"));
 }
 
 void MainWindow::on_openClicked()
