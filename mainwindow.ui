@@ -67,6 +67,9 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="numDigits">
+     <number>3</number>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
