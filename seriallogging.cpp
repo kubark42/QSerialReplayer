@@ -1,3 +1,20 @@
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+
 #include "mainwindow.h"
 #include "seriallogging.h"
 
@@ -25,7 +42,7 @@ SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortD
 			}
 		}
 
-		// Set zero time
+		// Set start time
 		startTime = QDateTime::currentDateTimeUtc();
 
 		// Configure serial port
@@ -42,10 +59,10 @@ SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortD
 
 	// Connect signals
 	connect(serialPort, SIGNAL(readyRead()), this, SLOT(readData()));
-	connect(mainWindow, SIGNAL(baudRateChanged(QSerialPort::BaudRate)), this, SLOT(baudRateUpdated(QSerialPort::BaudRate)));
-	connect(mainWindow, SIGNAL(dataBitsChanged(QSerialPort::DataBits)), this, SLOT(dataBitsUpdated(QSerialPort::DataBits)));
-	connect(mainWindow, SIGNAL(parityChanged(QSerialPort::Parity)), this, SLOT(parityUpdated(QSerialPort::Parity)));
-	connect(mainWindow, SIGNAL(stopBitsChanged(QSerialPort::StopBits)), this, SLOT(stopBitsUpdated(QSerialPort::StopBits)));
+	connect(mainWindow, SIGNAL(baudRateChanged(QSerialPort::BaudRate)), this, SLOT(on_baudRateUpdated(QSerialPort::BaudRate)));
+	connect(mainWindow, SIGNAL(dataBitsChanged(QSerialPort::DataBits)), this, SLOT(on_dataBitsUpdated(QSerialPort::DataBits)));
+	connect(mainWindow, SIGNAL(parityChanged(QSerialPort::Parity)), this, SLOT(on_parityUpdated(QSerialPort::Parity)));
+	connect(mainWindow, SIGNAL(stopBitsChanged(QSerialPort::StopBits)), this, SLOT(on_stopBitsUpdated(QSerialPort::StopBits)));
 }
 
 SerialLogging::~SerialLogging()
@@ -53,12 +70,13 @@ SerialLogging::~SerialLogging()
 	// Close out the file
 	file.close();
 
-	// `delete` closes the serial port if it is still open
+	// 'delete' closes the serial port if it is still open
 	delete serialPort;
 }
 
 void SerialLogging::saveToDisk(QByteArray data)
 {
+	// ToDo: Handle the case where lenth(data) > 255
 
 	quint32 ellapsedTicks = startTime.msecsTo(QDateTime::currentDateTimeUtc())/10;
 
@@ -72,29 +90,29 @@ void SerialLogging::saveToDisk(QByteArray data)
 
 	// If the file is open, write the data
 	if (file.isOpen()) {
-		file.write(data, sizeof(data));
+		file.write(packet, packet.size());
 	}
 }
 
-void SerialLogging::baudRateUpdated(QSerialPort::BaudRate baudRate)
+void SerialLogging::on_baudRateUpdated(QSerialPort::BaudRate baudRate)
 {
 	serialPort->setBaudRate(baudRate);
 }
 
 
-void SerialLogging::dataBitsUpdated(QSerialPort::DataBits dataBits)
+void SerialLogging::on_dataBitsUpdated(QSerialPort::DataBits dataBits)
 {
 	serialPort->setDataBits(dataBits);
 }
 
 
-void SerialLogging::parityUpdated(QSerialPort::Parity parity)
+void SerialLogging::on_parityUpdated(QSerialPort::Parity parity)
 {
 	serialPort->setParity(parity);
 }
 
 
-void SerialLogging::stopBitsUpdated(QSerialPort::StopBits stopBits)
+void SerialLogging::on_stopBitsUpdated(QSerialPort::StopBits stopBits)
 {
 	serialPort->setStopBits(stopBits);
 }

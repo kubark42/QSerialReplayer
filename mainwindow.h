@@ -9,7 +9,7 @@ class MainWindow;
 }
 
 class SerialLogging;
-
+class SerialPlayback;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -21,12 +21,13 @@ public:
 	QString getFileName(){return fileName;}
 
 private:
-	Ui::MainWindow *mainWindow;
+	Ui::MainWindow *ui_mainWindow;
 
 	QString fileName;
 	bool isConnected;
 
 	SerialLogging *serialLogger;
+	SerialPlayback *serialPlayback;
 	QSerialPortInfo serialPortDevice;
 	QSerialPort::BaudRate baudRate;
 	QSerialPort::DataBits dataBits;
@@ -38,6 +39,7 @@ signals:
 	void dataBitsChanged(QSerialPort::DataBits);
 	void parityChanged(QSerialPort::Parity);
 	void stopBitsChanged(QSerialPort::StopBits);
+	void playbackSpeedChanged(int);
 
 public slots:
 	void serialPortConnected();
@@ -46,20 +48,23 @@ public slots:
 
 private slots:
 	// Menu items
-	void newFileClicked();
-	void openClicked();
-	void saveClicked();
-	void saveAsClicked();
-	void actionOpenClicked();
+	void on_newFileClicked();
+	void on_openClicked();
+	void on_saveClicked();
+	void on_saveAsClicked();
+	void actionon_openClicked();
 	void actionConfigureSerialDeviceClicked();
 
-	// Radio buttons
-	void baudRateUpdated();
-	void dataBitsUpdated();
-	void parityUpdated();
-	void stopBitsUpdated();
+	// Slider
+	void on_playbackSliderChanged(int);
 
-	void connectClicked();
+	// Radio buttons
+	void on_baudRateUpdated();
+	void on_dataBitsUpdated();
+	void on_parityUpdated();
+	void on_stopBitsUpdated();
+
+	void on_connectClicked();
 
 };
 
