@@ -23,19 +23,21 @@ SerialPlayback::SerialPlayback(MainWindow *mainWindow) :
 	fsmStatus(FSM_SYNC0)
 {
 	fileName = mainWindow->getFileName();
+	fileName = "/Users/kenz/Desktop/1212.ser";
 
 	if (fileName != "") {
 		loadFile(fileName);
 
 		if (file.isOpen()) {
 			// Set start time
-			startTime = 0;
+			logTime = 0;
 
 			logHeartbeat.start(logPlaybackPeriod);
 
 			// Connect signals
 			connect(&logHeartbeat, SIGNAL(timeout()), this, SLOT(on_timerTimeout()));
 			connect(mainWindow, SIGNAL(playbackSpeedChanged(int)), this, SLOT(on_playbackSpeedChanged(int)));
+			connect(this, SIGNAL(newDataReady(QByteArray)), mainWindow, SLOT(receivedData(QByteArray)));
 		}
 	}
 }
@@ -120,7 +122,7 @@ void SerialPlayback::parseByte(quint8 c)
 
 void SerialPlayback::on_timerTimeout()
 {
-	startTime += 10;
+	logTime += 1;
 
 	while (fsmStatus != FSM_VALID_MSG && !file.atEnd()) {
 		QByteArray fileData;
@@ -135,8 +137,11 @@ void SerialPlayback::on_timerTimeout()
 	}
 
 	// If the packet needs to be emitted
-	if (startTime > timeStamp) {
+	if (logTime > timeStamp && fsmStatus == FSM_VALID_MSG) {
 		emit newDataReady(data);
+
+		data.clear();
+		fsmStatus = FSM_SYNC0;
 	}
 
 	// If the file has been read, end playback

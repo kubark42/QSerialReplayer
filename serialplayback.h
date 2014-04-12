@@ -59,7 +59,7 @@ private:
 
 	QFile file;
 	QString fileName;
-	quint32 startTime;
+	quint32 logTime;
 	QTimer logHeartbeat;
 	qint16 logPlaybackPeriod;
 
