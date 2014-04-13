@@ -126,13 +126,18 @@ void SerialPlayback::on_timerTimeout()
 
 	while (fsmStatus != FSM_VALID_MSG && !file.atEnd()) {
 		QByteArray fileData;
-		fileData = file.read(64);
+
+		// Try to read the packet intelligently. This is less
+		// efficient than reading lots of data at once, but
+		// easier to program.
+		if (fsmStatus != FSM_DATA) {
+			fileData = file.read(1);
+		}
+		else {
+			fileData = file.read(dataLength);
+		}
 		foreach (quint8 byte, fileData) {
 			parseByte(byte);
-
-			if (fsmStatus == FSM_VALID_MSG) {
-				break;
-			}
 		}
 	}
 
