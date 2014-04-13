@@ -37,7 +37,7 @@ SerialPlayback::SerialPlayback(MainWindow *mainWindow) :
 			// Connect signals
 			connect(&logHeartbeat, SIGNAL(timeout()), this, SLOT(on_timerTimeout()));
 			connect(mainWindow, SIGNAL(playbackSpeedChanged(int)), this, SLOT(on_playbackSpeedChanged(int)));
-			connect(this, SIGNAL(newDataReady(QByteArray)), mainWindow, SLOT(receivedData(QByteArray)));
+			connect(this, SIGNAL(newDataReady(QByteArray, quint64)), mainWindow, SLOT(receivedData(QByteArray, quint64)));
 		}
 	}
 }
@@ -143,7 +143,7 @@ void SerialPlayback::on_timerTimeout()
 
 	// Check if the packet needs to be emitted
 	if (logTime > timeStamp && fsmStatus == FSM_VALID_MSG) {
-		emit newDataReady(data);
+		emit newDataReady(data, timeStamp);
 
 		data.clear();
 		fsmStatus = FSM_SYNC0;

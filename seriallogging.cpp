@@ -52,7 +52,7 @@ SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortD
 		serialPort->setStopBits(stopBits);
 
 		connect(this, SIGNAL(serialPortOpened()), mainWindow, SLOT(serialPortConnected()));
-		connect(this, SIGNAL(newDataReady(QByteArray)), mainWindow, SLOT(receivedData(QByteArray)));
+		connect(this, SIGNAL(newDataReady(QByteArray, quint64)), mainWindow, SLOT(receivedData(QByteArray, quint64)));
 		connect(this, SIGNAL(newTimeStamp(qint64)), mainWindow, SLOT(updateTimer(qint64)));
 		emit serialPortOpened();
 	}
@@ -120,14 +120,18 @@ void SerialLogging::on_stopBitsUpdated(QSerialPort::StopBits stopBits)
 
 void SerialLogging::readData()
 {
+	// Get timestamp immediately
+	quint64 timeStamp = startTime.msecsTo(QDateTime::currentDateTimeUtc());
+
+	// Read data from serial port
 	QByteArray data = serialPort->readAll();
 
 	// Save the data to file
 	saveToDisk(data);
 
 	// Send the data to any connected listeners
-	emit newDataReady(data);
+	emit newDataReady(data, timeStamp);
 
 	// Send out the elapsed time to any connected listeners
-	emit newTimeStamp(startTime.msecsTo(QDateTime::currentDateTimeUtc()));
+	emit newTimeStamp(timeStamp);
 }

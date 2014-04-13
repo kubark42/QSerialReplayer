@@ -67,7 +67,7 @@ private:
 
 signals:
 	void playbackCompleted();
-	void newDataReady(QByteArray);
+	void newDataReady(QByteArray, quint64);
 
 private slots:
 	void on_playbackSpeedChanged(int);

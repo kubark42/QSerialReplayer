@@ -43,7 +43,7 @@ signals:
 
 public slots:
 	void serialPortConnected();
-	void receivedData(QByteArray);
+	void receivedData(QByteArray, quint64 timeStamp);
 	void updateTimer(qint64);
 
 private slots:

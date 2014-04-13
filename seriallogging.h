@@ -47,7 +47,7 @@ private:
 
 signals:
 	void serialPortOpened();
-	void newDataReady(QByteArray);
+	void newDataReady(QByteArray, quint64);
 	void newTimeStamp(qint64 ms);
 
 private slots:

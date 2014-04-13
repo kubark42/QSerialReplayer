@@ -210,9 +210,48 @@ void MainWindow::serialPortConnected()
 	isConnected=true;
 }
 
-void MainWindow::receivedData(QByteArray data)
+void MainWindow::receivedData(QByteArray data, quint64 timeStamp)
 {
-	ui_mainWindow->tb_serialConsole->append(data);
+	QTextCharFormat fmt;
+	fmt.setBackground(QColor(255-(rand()%30), 255-(rand()%30), 255-(rand()%30)));
+
+	{
+		QTextCursor cursor = ui_mainWindow->te_serialConsole->textCursor();
+
+		// Set background color
+		cursor.setCharFormat(fmt);
+
+		// Choose Cursor.insertText() approach over "TextEdit.appendPlainText()" because
+		// it's orders of magnitude faster. See https://bugreports.qt-project.org/browse/QTBUG-3554
+		cursor.beginEditBlock();
+
+		if (ui_mainWindow->rb_displayASCII->isChecked()) {
+			cursor.insertText(data);
+		} else if (ui_mainWindow->rb_displayHex->isChecked()) {
+			for (int i=0; i<data.size(); i++) {
+				QByteArray tmpData;
+				tmpData.append(data[i]);
+
+				cursor.insertText("0x");
+				cursor.insertText(tmpData.toHex());
+				cursor.insertText(" ");
+			}
+		}
+		cursor.endEditBlock();
+	}
+
+	{
+		QTextCursor cursor = ui_mainWindow->te_sampleTimes->textCursor();
+
+		// Set background color
+		cursor.setCharFormat(fmt);
+
+		// Choose Cursor.insertText() approach over "TextEdit.appendPlainText()" because
+		// it's orders of magnitude faster. See https://bugreports.qt-project.org/browse/QTBUG-3554
+		cursor.beginEditBlock();
+		cursor.insertText(QString::number(timeStamp/100.0) + QString("\n"));
+		cursor.endEditBlock();
+	}
 }
 
 
