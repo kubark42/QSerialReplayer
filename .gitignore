@@ -1,0 +1,5 @@
+# Exclude temporary and system files
+.DS_Store
+
+# build directories
+build
