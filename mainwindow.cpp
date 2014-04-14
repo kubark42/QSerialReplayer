@@ -231,7 +231,7 @@ void MainWindow::receivedData(QByteArray data, quint64 timeStamp)
 	fmt.setBackground(QColor(255-(rand()%30), 255-(rand()%30), 255-(rand()%30)));
 
 	{
-		QTextCursor cursor = ui_mainWindow->te_serialConsole->textCursor();
+		QTextCursor cursor = ui_mainWindow->pte_serialConsole->textCursor();
 
 		// Set background color
 		cursor.setCharFormat(fmt);
@@ -256,7 +256,7 @@ void MainWindow::receivedData(QByteArray data, quint64 timeStamp)
 	}
 
 	{
-		QTextCursor cursor = ui_mainWindow->te_sampleTimes->textCursor();
+		QTextCursor cursor = ui_mainWindow->pte_sampleTimes->textCursor();
 
 		// Set background color
 		cursor.setCharFormat(fmt);
@@ -285,6 +285,6 @@ void MainWindow::on_playbackSliderChanged(int newPeriod)
 
 void MainWindow::on_clearConsoleClicked()
 {
-	ui_mainWindow->te_serialConsole->clear();
-	ui_mainWindow->te_sampleTimes->clear();
+	ui_mainWindow->pte_serialConsole->clear();
+	ui_mainWindow->pte_sampleTimes->clear();
 }
