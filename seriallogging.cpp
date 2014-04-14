@@ -18,7 +18,7 @@
 #include "mainwindow.h"
 #include "seriallogging.h"
 
-SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortDevice, QSerialPort::BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits)
+SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortDevice, int baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits)
 {
 	serialPort = new QSerialPort(serialPortDevice);
 
@@ -59,7 +59,7 @@ SerialLogging::SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortD
 
 	// Connect signals
 	connect(serialPort, SIGNAL(readyRead()), this, SLOT(readData()));
-	connect(mainWindow, SIGNAL(baudRateChanged(QSerialPort::BaudRate)), this, SLOT(on_baudRateUpdated(QSerialPort::BaudRate)));
+	connect(mainWindow, SIGNAL(baudRateChanged(int)), this, SLOT(on_baudRateUpdated(int)));
 	connect(mainWindow, SIGNAL(dataBitsChanged(QSerialPort::DataBits)), this, SLOT(on_dataBitsUpdated(QSerialPort::DataBits)));
 	connect(mainWindow, SIGNAL(parityChanged(QSerialPort::Parity)), this, SLOT(on_parityUpdated(QSerialPort::Parity)));
 	connect(mainWindow, SIGNAL(stopBitsChanged(QSerialPort::StopBits)), this, SLOT(on_stopBitsUpdated(QSerialPort::StopBits)));
@@ -94,7 +94,7 @@ void SerialLogging::saveToDisk(QByteArray data)
 	}
 }
 
-void SerialLogging::on_baudRateUpdated(QSerialPort::BaudRate baudRate)
+void SerialLogging::on_baudRateUpdated(int baudRate)
 {
 	serialPort->setBaudRate(baudRate);
 }

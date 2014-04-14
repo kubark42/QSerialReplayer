@@ -29,13 +29,13 @@ private:
 	SerialLogging *serialLogger;
 	SerialPlayback *serialPlayback;
 	QSerialPortInfo serialPortDevice;
-	QSerialPort::BaudRate baudRate;
+	int baudRate;
 	QSerialPort::DataBits dataBits;
 	QSerialPort::Parity parity;
 	QSerialPort::StopBits stopBits;
 
 signals:
-	void baudRateChanged(QSerialPort::BaudRate);
+	void baudRateChanged(int);
 	void dataBitsChanged(QSerialPort::DataBits);
 	void parityChanged(QSerialPort::Parity);
 	void stopBitsChanged(QSerialPort::StopBits);
@@ -67,6 +67,9 @@ private slots:
 	// Push buttons
 	void on_connectClicked();
 	void on_clearConsoleClicked();
+
+	// Line edit
+	void on_customBaudRateUpdated();
 
 };
 

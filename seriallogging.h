@@ -34,7 +34,7 @@ class SerialLogging : public QObject
 	};
 
 public:
-	SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortDevice, QSerialPort::BaudRate baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits);
+	SerialLogging(MainWindow *mainWindow, QSerialPortInfo serialPortDevice, int baudRate, QSerialPort::DataBits dataBits, QSerialPort::Parity parity, QSerialPort::StopBits stopBits);
 	~SerialLogging();
 
 private:
@@ -53,7 +53,7 @@ signals:
 private slots:
 	void readData();
 
-	void on_baudRateUpdated(QSerialPort::BaudRate baudRate);
+	void on_baudRateUpdated(int baudRate);
 	void on_dataBitsUpdated(QSerialPort::DataBits dataBits);
 	void on_parityUpdated(QSerialPort::Parity parity);
 	void on_stopBitsUpdated(QSerialPort::StopBits stopBits);

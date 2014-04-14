@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui_mainWindow->rb_38400Baud, SIGNAL(clicked()), this, SLOT(on_baudRateUpdated()));
 	connect(ui_mainWindow->rb_57600Baud, SIGNAL(clicked()), this, SLOT(on_baudRateUpdated()));
 	connect(ui_mainWindow->rb_115200Baud, SIGNAL(clicked()), this, SLOT(on_baudRateUpdated()));
+	connect(ui_mainWindow->rb_customBaudRate, SIGNAL(clicked()), this, SLOT(on_baudRateUpdated()));
 
 	connect(ui_mainWindow->rb_5DataBits, SIGNAL(clicked()), this, SLOT(on_dataBitsUpdated()));
 	connect(ui_mainWindow->rb_6DataBits, SIGNAL(clicked()), this, SLOT(on_dataBitsUpdated()));
@@ -79,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui_mainWindow->rb_1StopBit, SIGNAL(clicked()), this, SLOT(on_stopBitsUpdated()));
 	connect(ui_mainWindow->rb_15StopBit, SIGNAL(clicked()), this, SLOT(on_stopBitsUpdated()));
 	connect(ui_mainWindow->rb_2StopBit, SIGNAL(clicked()), this, SLOT(on_stopBitsUpdated()));
+
+	// Connect line edits
+	connect(ui_mainWindow->le_customBaudRate, SIGNAL(editingFinished()), this, SLOT(on_customBaudRateUpdated()));
 
 	// Trigger UI updates
 	on_baudRateUpdated();
@@ -153,25 +157,33 @@ void MainWindow::on_connectClicked()
 
 void MainWindow::on_baudRateUpdated()
 {
+	int tmpBaudRate;
+
 	if (ui_mainWindow->rb_1200Baud->isChecked()) {
-		baudRate = QSerialPort::Baud1200;
+		tmpBaudRate = QSerialPort::Baud1200;
 	} else if (ui_mainWindow->rb_2400Baud->isChecked()) {
-			baudRate = QSerialPort::Baud2400;
+		tmpBaudRate = QSerialPort::Baud2400;
 	} else if (ui_mainWindow->rb_4800Baud->isChecked()){
-		baudRate = QSerialPort::Baud4800;
+		tmpBaudRate = QSerialPort::Baud4800;
 	} else if (ui_mainWindow->rb_9600Baud->isChecked()){
-		baudRate = QSerialPort::Baud9600;
+		tmpBaudRate = QSerialPort::Baud9600;
 	} else if (ui_mainWindow->rb_19200Baud->isChecked()){
-		baudRate = QSerialPort::Baud19200;
+		tmpBaudRate = QSerialPort::Baud19200;
 	} else if (ui_mainWindow->rb_38400Baud->isChecked()){
-		baudRate = QSerialPort::Baud38400;
+		tmpBaudRate = QSerialPort::Baud38400;
 	} else if (ui_mainWindow->rb_57600Baud->isChecked()){
-		baudRate = QSerialPort::Baud57600;
+		tmpBaudRate = QSerialPort::Baud57600;
 	} else if (ui_mainWindow->rb_115200Baud->isChecked()){
-		baudRate = QSerialPort::Baud115200;
+		tmpBaudRate = QSerialPort::Baud115200;
+	} else if (ui_mainWindow->rb_customBaudRate->isChecked()){
+		tmpBaudRate = ui_mainWindow->le_customBaudRate->text().toUInt();
 	}
 
-	emit baudRateChanged(baudRate);
+	// Only update the baudrate if it has changed
+	if (tmpBaudRate != baudRate) {
+		baudRate = tmpBaudRate;
+		emit baudRateChanged(baudRate);
+	}
 }
 
 void MainWindow::on_dataBitsUpdated()
@@ -287,4 +299,10 @@ void MainWindow::on_clearConsoleClicked()
 {
 	ui_mainWindow->pte_serialConsole->clear();
 	ui_mainWindow->pte_sampleTimes->clear();
+}
+
+
+void MainWindow::on_customBaudRateUpdated()
+{
+	on_baudRateUpdated();
 }
