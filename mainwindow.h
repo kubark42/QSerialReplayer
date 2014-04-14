@@ -64,7 +64,9 @@ private slots:
 	void on_parityUpdated();
 	void on_stopBitsUpdated();
 
+	// Push buttons
 	void on_connectClicked();
+	void on_clearConsoleClicked();
 
 };
 

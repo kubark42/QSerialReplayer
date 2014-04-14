@@ -6,6 +6,7 @@
 #include "ui_mainwindow.h"
 #include "seriallogging.h"
 #include "serialplayback.h"
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -15,6 +16,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	dataBits(QSerialPort::Data8),
 	parity(QSerialPort::NoParity)
 {
+	// Inspired from http://stackoverflow.com/questions/14960472/running-c-binary-from-inside-qt-and-redirecting-the-output-of-the-binary-to-a
+	// and http://justcheckingonall.wordpress.com/2009/06/09/howto-vsp-socat/
+	QProcess process;
+				process.start(":/external_binaries/socat.osx",
+								  QStringList() << "-d" << "-d" << "pty,raw,echo=0"  << "pty,raw,echo=0",
+								  QIODevice::ReadWrite);
+
+	if(!process.waitForFinished()) // beware the timeout default parameter
+		 qDebug() << "executing program failed with exit code" << process.exitCode();
+	else
+		 qDebug() << QString(process.readAllStandardOutput()).split('\n');
+
+
 	ui_mainWindow->setupUi(this);
 
 	// Populate serial port combo box
@@ -36,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Connect push buttons
 	connect(ui_mainWindow->pb_connectSerialPort, SIGNAL(clicked()), this, SLOT(on_connectClicked()));
+	connect(ui_mainWindow->pb_clearConsole, SIGNAL(clicked()), this, SLOT(on_clearConsoleClicked()));
 
 	// Connect slider
 	connect(ui_mainWindow->hs_time, SIGNAL(valueChanged(int)), this, SLOT(on_playbackSliderChanged(int)));
@@ -265,4 +280,11 @@ void MainWindow::updateTimer(qint64 elapsedTime_ms)
 void MainWindow::on_playbackSliderChanged(int newPeriod)
 {
 	emit playbackSpeedChanged(newPeriod);
+}
+
+
+void MainWindow::on_clearConsoleClicked()
+{
+	ui_mainWindow->te_serialConsole->clear();
+	ui_mainWindow->te_sampleTimes->clear();
 }
