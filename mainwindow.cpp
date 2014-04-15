@@ -132,7 +132,7 @@ void MainWindow::on_saveClicked()
 
 void MainWindow::on_saveAsClicked()
 {
-	fileName = QFileDialog::QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Binary (*.ser)"));
+	fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Binary (*.ser)"));
 
 	// Call save routine
 	on_saveClicked();
